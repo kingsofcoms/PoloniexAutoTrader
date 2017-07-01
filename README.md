@@ -30,6 +30,7 @@ So for e.g you select 15 Market Period, data will first be fetched 15mins from D
 ## Strategies
 - 5 Built in strategies
 - Dispatcher timer for running strategies at Market Period intervals
+( Test interval of 10 secs commented out) use this to test and comment out the line below in Strategy.cs
 - Output data to window
 
 ### Features
