@@ -37,6 +37,7 @@ So for e.g you select 15 Market Period, data will first be fetched 15mins from D
  #### To Do
 - Some changes have been made which need testing
 - Moving average cross over strategy to upload
+- Get Timer to start on a divison of Market Period / Hour / Day
 
 #### Dependencies
 Make sure to download, build and reference my fork of PoloniexApi.Net from my repo.
