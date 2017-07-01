@@ -15,6 +15,8 @@ This is tested and working, but some things have been done to correct async meth
 3. Select Market Period, Currency Pair and trade size in BTC
 4. Click start
 ** Each algo is then added to the datagrid **
+The timer works datetime.now + market period ( To Be fixed)
+So for e.g you select 15 Market Period, data will first be fetched 15mins from DateTime.Now
 
 ![Start Algo](https://github.com/ColossusFX/PoloniexAutoTrader/blob/master/Screenshot_3.jpg?raw=true "Start Algo")
 
