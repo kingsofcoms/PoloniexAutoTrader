@@ -11,6 +11,7 @@ namespace PoloniexAutoTrader.Strategies
     {
         double topBuyPrice;
         double topSellPrice;
+        string lineSeperator = "-------------------";
 
         public RangeBreakout(string strategyName, MarketPeriod marketSeries, CurrencyPair symbol, bool? buy, bool? sell, double volume) : base(strategyName, marketSeries, symbol, buy, sell, volume)
         {
@@ -79,16 +80,16 @@ namespace PoloniexAutoTrader.Strategies
             double rangeLowAvg = Math.Round(rangeLow, 7) / period;
 
             // Output IBS to datawindow
-            outputData.Strategy1Output.Text += "Range High Avg" + "\n" + rangeHighAvg + "\n" + "-------------------" + "\n";
-            outputData.Strategy1Output.Text += "Range Low Avg" + "\n" + rangeLowAvg + "\n" + "-------------------" + "\n";
+            outputData.Strategy1Output.Text += "Range High Avg" + "\n" + rangeHighAvg + "\n" + lineSeperator + "\n";
+            outputData.Strategy1Output.Text += "Range Low Avg" + "\n" + rangeLowAvg + "\n" + lineSeperator + "\n";
 
             // ABR
-            outputData.Strategy1Output.Text += "ABR" + "\n" + ABR.ToStringNormalized() + "\n" + "-------------------" + "\n";
+            outputData.Strategy1Output.Text += "ABR" + "\n" + ABR.ToStringNormalized() + "\n" + lineSeperator + "\n";
 
             // Bollinger Bands
-            outputData.Strategy1Output.Text += "B Band Top" + "\n" + bBandTop + "\n" + "-------------------" + "\n";
-            outputData.Strategy1Output.Text += "SMA" + "\n" + SMA + "\n" + "-------------------" + "\n";
-            outputData.Strategy1Output.Text += "B Band Bottom" + "\n" + bBandBottom + "\n" + "-------------------" + "\n";
+            outputData.Strategy1Output.Text += "B Band Top" + "\n" + bBandTop + "\n" + lineSeperator + "\n";
+            outputData.Strategy1Output.Text += "SMA" + "\n" + SMA + "\n" + lineSeperator + "\n";
+            outputData.Strategy1Output.Text += "B Band Bottom" + "\n" + bBandBottom + "\n" + lineSeperator + "\n";
 
 
             // Output IBS to datawindow
@@ -103,7 +104,7 @@ namespace PoloniexAutoTrader.Strategies
                         await marketOrder.ExecuteMarketOrder(Symbol, OrderType.Buy, volume);
                         // Output IBS to datawindow
 
-                        string tradeOutputBuy = DateTime.Now + "\n" + "Volume = " + volume + "\n" + OrderType.Buy + "\n" + "Range Low = " + rangeLowAvg + "\n" + "-------------------" + "\n";
+                        string tradeOutputBuy = DateTime.Now + "\n" + "Volume = " + volume + "\n" + OrderType.Buy + "\n" + "Range Low = " + rangeLowAvg + "\n" + lineSeperator + "\n";
                         Debug.WriteLine(tradeOutputBuy);
                         outputData.Strategy1Output.Text += tradeOutputBuy;
                     }
@@ -124,7 +125,7 @@ namespace PoloniexAutoTrader.Strategies
                         await marketOrder.ExecuteMarketOrder(Symbol, OrderType.Sell, volume);
 
                         // Output IBS to datawindow
-                        string tradeOutputSell = DateTime.Now + "\n" + "Volume = " + volume + "\n" + OrderType.Sell + "\n" + "Range High = " + rangeHighAvg + "\n" + "-------------------" + "\n";
+                        string tradeOutputSell = DateTime.Now + "\n" + "Volume = " + volume + "\n" + OrderType.Sell + "\n" + "Range High = " + rangeHighAvg + "\n" + lineSeperator + "\n";
                         Debug.WriteLine(tradeOutputSell);
                         outputData.Strategy1Output.Text += tradeOutputSell;
                     }

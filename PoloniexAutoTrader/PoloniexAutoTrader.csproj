@@ -50,10 +50,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>6059D758835952D5FC0A083B6D392F8780B51630</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>1F80072B5FE83BDDDCC36D991763F908E16789BC</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>PoloniexAutoTrader_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>
+    </ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <GenerateManifests>true</GenerateManifests>
@@ -63,19 +64,22 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="MahApps.Metro, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.1.6.0-alpha002\lib\net45\MahApps.Metro.dll</HintPath>
+      <HintPath>..\packages\MahApps.Metro.1.6.0-alpha008\lib\net45\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="MahApps.Metro.IconPacks, Version=1.9.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.IconPacks.1.9.0\lib\net45\MahApps.Metro.IconPacks.dll</HintPath>
     </Reference>
-    <Reference Include="PoloniexApi.Net">
-      <HintPath>..\..\..\..\..\..\Downloads\Visual Studio Files\PoloniexApi.Net-master Kripod\PoloniexApi.Net-master\PoloniexApi.Net\bin\Debug\PoloniexApi.Net.dll</HintPath>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PoloniexApi.Net, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Downloads\PoloniexApi.Net-master  EDIT\PoloniexApi.Net-master\PoloniexApi.Net\bin\Debug\PoloniexApi.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\MahApps.Metro.1.6.0-alpha002\lib\net45\System.Windows.Interactivity.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\MahApps.Metro.1.6.0-alpha008\lib\net45\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -97,9 +101,10 @@
     <Compile Include="Indicators\Indicator.cs" />
     <Compile Include="Market\CandleIndex.cs" />
     <Compile Include="Market\GetCurrentPrice.cs" />
+    <Compile Include="Strategies\MACrossover.cs" />
     <Compile Include="Strategies\PercentageTrader.cs" />
     <Compile Include="Strategies\IBS.cs" />
-    <Compile Include="Strategies\BlackSwan.cs" />
+    <Compile Include="Strategies\TrendFollow.cs" />
     <Compile Include="Strategies\Range.cs" />
     <Compile Include="Strategies\RangeBreakout.cs" />
     <Compile Include="Strategies\Strategy.cs" />
