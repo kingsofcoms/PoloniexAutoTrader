@@ -12,6 +12,7 @@ namespace PoloniexAutoTrader.Strategies
 
         double topBuyPrice;
         double topSellPrice;
+        string lineSeperator = "-------------------";
 
         public IBS(string strategyName, MarketPeriod marketSeries, CurrencyPair symbol, bool? buy, bool? sell, double volume) : base(strategyName, marketSeries, symbol, buy, sell, volume)
         {
@@ -64,7 +65,7 @@ namespace PoloniexAutoTrader.Strategies
             var ibs = ((canldeinfo[candleindex].Close - canldeinfo[candleindex - 1].Low) / (canldeinfo[candleindex].High - canldeinfo[candleindex].Low)) * 100;
 
             // Output IBS to datawindow
-            outputData.Strategy1Output.Text += "IBS" + "\n" + ibs + "\n" + DateTime.Now.ToString() + "\n" + "-------------------" + "\n";
+            outputData.Strategy1Output.Text += "IBS" + "\n" + ibs + "\n" + DateTime.Now.ToString() + "\n" + lineSeperator + "\n";
 
             // 0.15% fee
             if ((bool)Buy)
@@ -76,7 +77,7 @@ namespace PoloniexAutoTrader.Strategies
                         await marketOrder.ExecuteMarketOrder(Symbol, OrderType.Buy, volume);
                         // Output IBS to datawindow
 
-                        string tradeOutputBuy = DateTime.Now + "\n" + "Volume = " + volume + "\n" + OrderType.Buy + "\n" + "IBS = " + ibs + "\n" + "-------------------" + "\n";
+                        string tradeOutputBuy = DateTime.Now + "\n" + "Volume = " + volume + "\n" + OrderType.Buy + "\n" + "IBS = " + ibs + "\n" + lineSeperator + "\n";
                         Debug.WriteLine(tradeOutputBuy);
                         outputData.Strategy1Output.Text += tradeOutputBuy;
                     }
@@ -98,7 +99,7 @@ namespace PoloniexAutoTrader.Strategies
                         await marketOrder.ExecuteMarketOrder(Symbol, OrderType.Sell, volume);
 
                         // Output IBS to datawindow
-                        string tradeOutputSell = DateTime.Now + "\n" + "Volume = " + volume + "\n" + OrderType.Sell + "\n" + "IBS = " + ibs + "\n" + "-------------------" + "\n";
+                        string tradeOutputSell = DateTime.Now + "\n" + "Volume = " + volume + "\n" + OrderType.Sell + "\n" + "IBS = " + ibs + "\n" + lineSeperator + "\n";
                         Debug.WriteLine(tradeOutputSell);
                         outputData.Strategy1Output.Text += tradeOutputSell;
                     }

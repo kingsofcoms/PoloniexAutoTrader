@@ -219,14 +219,14 @@ namespace PoloniexAutoTrader
             // Get data from textboxes / comboboxes
             GetStrategyData(out string strategyName, out MarketPeriod marketSeries, out CurrencyPair symbol, out double total, out bool? buy, out bool? sell, StrategyName1, MarketSeriesSelect1, Strategy1Symbol, Strategy1Buy, Strategy1Sell, Strategy1Total);
 
-            BlackSwan blackSwan = new BlackSwan(strategyName, marketSeries, symbol, buy, sell, total);
+            MACrossover maCrossover = new MACrossover(strategyName, marketSeries, symbol, buy, sell, total);
 
             // Show saved settings in textblock - TEMP
-            TestConsoleStrat1.Text = blackSwan.StrategyName + "\n" + blackSwan.Symbol + " | " + blackSwan.Total + " | " + blackSwan.Buy + " | " + blackSwan.Sell + " | " + blackSwan.MarketSeries;
+            TestConsoleStrat1.Text = maCrossover.StrategyName + "\n" + maCrossover.Symbol + " | " + maCrossover.Total + " | " + maCrossover.Buy + " | " + maCrossover.Sell + " | " + maCrossover.MarketSeries;
 
             // Create List
             // ObservableCollection<BlackSwan> list = new ObservableCollection<BlackSwan>();
-            runningStrategyList.Add(blackSwan);
+            runningStrategyList.Add(maCrossover);
             this.RunningStrategies.ItemsSource = runningStrategyList;
 
             //Show dialogue box to show strategy is running
@@ -240,23 +240,22 @@ namespace PoloniexAutoTrader
             GetStrategyData(out string strategyName, out MarketPeriod marketSeries, out CurrencyPair symbol, out double total, out bool? buy, out bool? sell, StrategyName2, MarketSeriesSelect2, Strategy2Symbol, Strategy2Buy, Strategy2Sell, Strategy2Total);
 
             // Save strategy settings to strategy class
-            IBS ibs = new IBS(strategyName, marketSeries, symbol, buy, sell, total);
+            TrendFollow trendFollow = new TrendFollow(strategyName, marketSeries, symbol, buy, sell, total);
 
             // Create List
             // ObservableCollection<IBS> list = new ObservableCollection<IBS>();
-            runningStrategyList.Add(ibs);
+            runningStrategyList.Add(trendFollow);
             this.RunningStrategies.ItemsSource = runningStrategyList;
 
             // Show saved settings in textblock - TEMP
-            TestConsoleStrat2.Text = ibs.StrategyName + "\n" + ibs.Symbol + " | " + ibs.Total + " | " + ibs.Buy + " | " + ibs.Sell + " | " + ibs.MarketSeries;
+            TestConsoleStrat2.Text = trendFollow.StrategyName + "\n" + trendFollow.Symbol + " | " + trendFollow.Total + " | " + trendFollow.Buy + " | " + trendFollow.Sell + " | " + trendFollow.MarketSeries;
 
             //Show dialogue box to show strategy is running
             await DialogBoxStrategy(StrategyName2.Content.ToString(), "Started");
 
             // Start Algo
             #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            ibs.Start();
-
+            trendFollow.Start();
 
         }
 
@@ -322,7 +321,7 @@ namespace PoloniexAutoTrader
             this.RunningStrategies.ItemsSource = runningStrategyList;
 
             // Show saved settings in textblock - TEMP
-            TestConsoleStrat4.Text = rangeBreakoutTrader.StrategyName + "\n" + rangeBreakoutTrader.Symbol + " | " + rangeBreakoutTrader.Total + " | " + rangeBreakoutTrader.Buy + " | " + rangeBreakoutTrader.Sell + " | " + rangeBreakoutTrader.MarketSeries;
+            TestConsoleStrat5.Text = rangeBreakoutTrader.StrategyName + "\n" + rangeBreakoutTrader.Symbol + " | " + rangeBreakoutTrader.Total + " | " + rangeBreakoutTrader.Buy + " | " + rangeBreakoutTrader.Sell + " | " + rangeBreakoutTrader.MarketSeries;
 
             //Show dialogue box to show strategy is running
             await DialogBoxStrategy(StrategyName5.Content.ToString(), "Started");

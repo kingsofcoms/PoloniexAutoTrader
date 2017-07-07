@@ -96,14 +96,14 @@
             <Button Click="StrategyStop_Click" Width="80" Foreground="IndianRed" Content="{iconPacks:PackIcon {x:Static iconPacks:PackIconMaterialKind.Stop}, Width=32, Height=32}" Grid.Column="9" Grid.Row="9" Grid.ColumnSpan="2"/>
 
             <ComboBox x:Name="MarketSeriesSelect1" SelectedIndex="3" Loaded="MarketSeriesSelect_Loaded" SelectedValue="MSValue" SelectionChanged="MarketSeriesSelect_SelectionChanged" Grid.Column="4" Grid.Row="1" Height="30"/>
-            <Label Name="StrategyName1" FontSize="14" Content="Black Swan" HorizontalContentAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1"></Label>
+            <Label Name="StrategyName1" FontSize="14" Content="MA CrossOver" HorizontalContentAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="1"></Label>
             <CheckBox Name="Strategy1Buy" Content="BUY" Grid.Column="5" IsChecked="True" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center"/>
             <CheckBox Name="Strategy1Sell" Content="Sell" Grid.Column="5" IsChecked="True" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Right" Grid.Row="1" VerticalAlignment="Center"/>
             <ComboBox Name="Strategy1Symbol" Loaded="SymbolSelect_Loaded" Grid.Column="6" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center"  Height="30" Width="150"/>
             <TextBox x:Name="Strategy1Total" Text="0.001" TextChanged="Total_TextChanged" Grid.Column="7" Grid.Row="1"  Height="30" Width="150"/>
 
             <ComboBox x:Name="MarketSeriesSelect2" SelectedIndex="3" Loaded="MarketSeriesSelect_Loaded" SelectedValue="MSValue" SelectionChanged="MarketSeriesSelect_SelectionChanged" Grid.Column="4" Grid.Row="2" Height="30"/>
-            <Label Name="StrategyName2" FontSize="14" Content="IBS" HorizontalContentAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="2"></Label>
+            <Label Name="StrategyName2" FontSize="14" Content="Trend Follower" HorizontalContentAlignment="Center" HorizontalAlignment="Center" VerticalContentAlignment="Center" Grid.Column="3" Grid.Row="2"></Label>
             <CheckBox Name="Strategy2Buy" Content="BUY" Grid.Column="5" IsChecked="True" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center"/>
             <CheckBox Name="Strategy2Sell" Content="Sell" Grid.Column="5" IsChecked="True" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked" HorizontalAlignment="Right" Grid.Row="2" VerticalAlignment="Center"/>
             <ComboBox Name="Strategy2Symbol" Loaded="SymbolSelect_Loaded" Grid.Column="6" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center"  Height="30" Width="150"/>
