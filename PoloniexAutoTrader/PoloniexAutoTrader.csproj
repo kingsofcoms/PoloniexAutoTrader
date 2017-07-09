@@ -74,7 +74,7 @@
     </Reference>
     <Reference Include="PoloniexApi.Net, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Downloads\PoloniexApi.Net-master  EDIT\PoloniexApi.Net-master\PoloniexApi.Net\bin\Debug\PoloniexApi.Net.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\Downloads\Visual Studio Files\PoloniexApi.Net-master  EDIT\PoloniexApi.Net-master\PoloniexApi.Net\bin\Debug\PoloniexApi.Net.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />

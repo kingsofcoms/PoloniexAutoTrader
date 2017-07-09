@@ -230,7 +230,11 @@ namespace PoloniexAutoTrader
             this.RunningStrategies.ItemsSource = runningStrategyList;
 
             //Show dialogue box to show strategy is running
-            await DialogBoxStrategy(StrategyName1.Content.ToString(), "Started");            
+            await DialogBoxStrategy(StrategyName1.Content.ToString(), "Started");
+
+            // Start Algo
+            #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            maCrossover.Start();
         }
 
         // Start Strategy 2
@@ -341,7 +345,7 @@ namespace PoloniexAutoTrader
             strategy.Stop();
             
             // Show stopping dialog
-            await DialogBoxStrategy(StrategyName4.Content.ToString(), "Stopped");
+            await DialogBoxStrategy(strategy.StrategyName.ToString(), "Stopped");
         }
 
         private void Total_TextChanged(object sender, TextChangedEventArgs e)
