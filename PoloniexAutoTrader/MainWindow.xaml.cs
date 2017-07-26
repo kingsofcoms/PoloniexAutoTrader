@@ -228,7 +228,6 @@ namespace PoloniexAutoTrader
             TestConsoleStrat1.Text = maCrossover.StrategyName + "\n" + maCrossover.Symbol + " | " + maCrossover.Total + " | " + maCrossover.Buy + " | " + maCrossover.Sell + " | " + maCrossover.MarketSeries;
 
             // Create List
-            // ObservableCollection<BlackSwan> list = new ObservableCollection<BlackSwan>();
             runningStrategyList.Add(maCrossover);
             this.RunningStrategies.ItemsSource = runningStrategyList;
 
@@ -250,7 +249,6 @@ namespace PoloniexAutoTrader
             TrendFollow trendFollow = new TrendFollow(strategyName, marketSeries, symbol, buy, sell, total);
 
             // Create List
-            // ObservableCollection<IBS> list = new ObservableCollection<IBS>();
             runningStrategyList.Add(trendFollow);
             this.RunningStrategies.ItemsSource = runningStrategyList;
 
@@ -277,7 +275,6 @@ namespace PoloniexAutoTrader
             PercentageTrader percentageTrader = new PercentageTrader(strategyName, marketSeries, symbol, buy, sell, total);
 
             // Create List
-            // ObservableCollection<PercentageTrader> list = new ObservableCollection<PercentageTrader>();
             runningStrategyList.Add(percentageTrader);
             this.RunningStrategies.ItemsSource = runningStrategyList;
 
