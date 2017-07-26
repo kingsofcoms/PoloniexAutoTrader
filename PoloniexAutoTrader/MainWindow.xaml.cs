@@ -139,8 +139,11 @@ namespace PoloniexAutoTrader
             Handle(sender as CheckBox);
         }
 
+
         //
+#pragma warning disable RECS0154 // Parameter is never used
         void Handle(CheckBox checkBox)
+#pragma warning restore RECS0154 // Parameter is never used
         {
             // Refresh balance
             //BalanceGrid.Items.Refresh();
@@ -311,7 +314,7 @@ namespace PoloniexAutoTrader
             rangeTrader.Start();
         }
 
-        // Start Strategy 4
+        // Start Strategy 5
         async void Strategy5Start_Click(object sender, RoutedEventArgs e)
         {
             // Get data from textboxes / comboboxes
@@ -332,6 +335,29 @@ namespace PoloniexAutoTrader
 
             // Start Algo
             rangeBreakoutTrader.Start();
+        }
+
+        // Start Strategy 6
+        async void Strategy6Start_Click(object sender, RoutedEventArgs e)
+        {
+            // Get data from textboxes / comboboxes
+            GetStrategyData(out string strategyName, out MarketPeriod marketSeries, out CurrencyPair symbol, out double total, out bool? buy, out bool? sell, StrategyName6, MarketSeriesSelect6, Strategy6Symbol, Strategy6Buy, Strategy6Sell, Strategy6Total);
+
+            // Save strategy settings to strategy class
+            MarketScanner marketScanner = new MarketScanner(strategyName, marketSeries, symbol, buy, sell, total);
+
+            // Create List
+            runningStrategyList.Add(marketScanner);
+            this.RunningStrategies.ItemsSource = runningStrategyList;
+
+            // Show saved settings in textblock - TEMP
+            //TestConsoleStrat6.Text = marketScanner.StrategyName + "\n" + marketScanner.Symbol + " | " + marketScanner.Total + " | " + marketScanner.Buy + " | " + marketScanner.Sell + " | " + marketScanner.MarketSeries;
+
+            //Show dialogue box to show strategy is running
+            await DialogBoxStrategy(StrategyName6.Content.ToString(), "Started");
+
+            // Start Algo
+            marketScanner.Start();
         }
 
         // Stop Strategy 1

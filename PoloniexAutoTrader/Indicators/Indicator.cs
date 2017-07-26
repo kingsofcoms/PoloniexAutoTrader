@@ -34,6 +34,11 @@ namespace PoloniexAutoTrader.Indicators
             };
         }
 
+        // EMA Calculation
+        // Initial SMA: 10 Period sum / 10
+        // Multipilier: (2 / (Time periods +1) ) = (2 / (10+1) ) = 0.1818 (18.18%)
+        // EMA: {Close - EMA (previous day) } x multiplier + EMA (previous day).
+
         // ABR = Average Bar Range
         public static double ABR(this IList<IMarketChartData> value, int index, int period)
         {
@@ -147,15 +152,12 @@ namespace PoloniexAutoTrader.Indicators
             double fib382 = 0; // [3]
             double fib500 = 0; // [4]
             double fib618 = 0; // [5]
-            double fib1618 = 0; //[6]
+            double fib1618 = 0; // [6]
 
             for (var i = index; i > (index - period); i--)
             {
                 high = Math.Max(value[index - period].High, value[i].High);
                 low = Math.Min(value[index - period].High, value[i].Low);
-
-                //var high = value[i].High;
-                //var low = value[i].Low;
 
                 fib618negative = low - (high - low) * 0.618;
                 fib382 = low + (high - low) * 0.382;
@@ -171,6 +173,32 @@ namespace PoloniexAutoTrader.Indicators
 
         // TO DO
         // RSI Divergence
-        // 
+        // Correlation
+
+        // Get Average Volume Quote
+        public static double Correlation(this IList<IMarketChartData> value, IList<IMarketChartData> value2, int index, int period)
+        {
+            double correlation = 0;
+            double sumX = 0, sumY = 0, sumXY = 0, sumX2 = 0, sumY2 = 0;
+            double x, y, x2, y2;
+
+            for (var i = index; i > (index - period); i--)
+            {
+                x = value[index].Close;
+                y = value2[index].Close;
+
+                x2 = x * x;
+                y2 = y * y;
+                sumX += x;
+                sumY += y;
+                sumXY += x * y;
+                sumX2 += x2;
+                sumY2 += y2;
+            }
+
+            correlation = (period * (sumXY) - sumX * sumY) / Math.Sqrt((period * sumX2 - sumX * sumX) * (period * sumY2 - sumY * sumY));
+            return correlation;
+        }
+
     }
 }

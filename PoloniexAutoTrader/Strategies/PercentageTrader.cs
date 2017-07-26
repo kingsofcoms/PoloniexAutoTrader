@@ -142,7 +142,7 @@ namespace PoloniexAutoTrader.Strategies
 
                 catch (Exception error)
                 {
-                    Console.WriteLine(error.Message);
+                    Debug.WriteLine(error.Message);
                     //MessageDialogue.Show("Order Error" + error.Message);
                 }
             }

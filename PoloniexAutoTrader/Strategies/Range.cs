@@ -14,6 +14,7 @@ namespace PoloniexAutoTrader.Strategies
     {
         double topBuyPrice;
         double topSellPrice;
+        double currentTickerPrice;
         string lineSeperator = "-------------------";
 
         public Range(string strategyName, MarketPeriod marketSeries, CurrencyPair symbol, bool? buy, bool? sell, double volume) : base(strategyName, marketSeries, symbol, buy, sell, volume)
@@ -45,6 +46,7 @@ namespace PoloniexAutoTrader.Strategies
 
                 topBuyPrice = ticker.MarketData.OrderTopBuy;
                 topSellPrice = ticker.MarketData.OrderTopSell;
+                currentTickerPrice = ticker.MarketData.PriceLast;
             }
         }
 
@@ -58,6 +60,29 @@ namespace PoloniexAutoTrader.Strategies
 
             DateTime startdate = new DateTime(2017, 1, 1);
             DateTime enddate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 0);
+
+            // Find % profit / loss of trades
+            var opentrades = await Client.PoloniexClient.Trading.GetTradesAsync(Symbol, startdate, enddate);
+
+            foreach (var trade in opentrades)
+            {
+                double percentChange = ((currentTickerPrice - trade.PricePerCoin) / currentTickerPrice);
+
+                if (trade.Type == OrderType.Buy && percentChange >= 0.05)
+                {
+                    // Close position if > 5% profit
+                    string buyPercentageData = string.Format("{0} | Entry Price {1} | Profit {2}%" + "\n" + lineSeperator + "\n", trade.Type, trade.PricePerCoin, percentChange);
+                    Debug.WriteLine(buyPercentageData);
+                    outputData.Strategy1Output.Text += buyPercentageData;
+                }
+                else if (trade.Type == OrderType.Sell && percentChange <= 0.05)
+                {
+                    // Close position if > 5% profit
+                    string sellPercentageData = string.Format("{0} | Entry Price {1} | Profit {2}%" + "\n" + lineSeperator + "\n", trade.Type, trade.PricePerCoin, percentChange);
+                    Debug.WriteLine(sellPercentageData);
+                    outputData.Strategy1Output.Text += sellPercentageData;
+                }
+            }
 
             var candleInfo = await Client.PoloniexClient.Markets.GetChartDataAsync(Symbol, MarketSeries, startdate, enddate);
             var candleindex = candleInfo.Count() - 1;

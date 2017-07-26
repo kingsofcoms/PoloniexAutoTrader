@@ -102,6 +102,7 @@
     <Compile Include="Market\CandleIndex.cs" />
     <Compile Include="Market\GetCurrentPrice.cs" />
     <Compile Include="Strategies\MACrossover.cs" />
+    <Compile Include="Strategies\MarketScanner.cs" />
     <Compile Include="Strategies\PercentageTrader.cs" />
     <Compile Include="Strategies\IBS.cs" />
     <Compile Include="Strategies\TrendFollow.cs" />
