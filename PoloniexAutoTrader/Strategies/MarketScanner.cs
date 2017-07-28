@@ -140,8 +140,8 @@ namespace PoloniexAutoTrader.Strategies
                 string smaIndexTest = string.Format("{0} SMA at Index {1} {2} {1} Candle Close at Index {1} {3} {1} {4} {5}", newSymbol, newline, SMA, candleInfo[index].Close, candleInfo[index].Time, lineSeperator);
                 string smaIndexTest2 = string.Format("{0} SMA at Index {1} {2} {1} Candle Close at Index {1} {3} {1} {4} {5}", newSymbol, newline, SMA, candleInfo[index-1].Close, candleInfo[index-1].Time, lineSeperator);
 
-                Debug.WriteLine(smaIndexTest);
-                Debug.WriteLine(smaIndexTest2);
+                //Debug.WriteLine(smaIndexTest);
+                //Debug.WriteLine(smaIndexTest2);
 
                 // ABR
                 string abrString = string.Format("{0} ABR = {1}{2}", newSymbol, ABR.ToStringNormalized(), lineSeperator);
