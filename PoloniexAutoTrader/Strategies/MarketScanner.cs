@@ -147,12 +147,12 @@ namespace PoloniexAutoTrader.Strategies
                 string abrString = string.Format("{0} ABR = {1}{2}", newSymbol, ABR.ToStringNormalized(), lineSeperator);
 
                 //Bullish Signal
-                string bullSignal = string.Format("{0} Bullish = {1}{2}", newSymbol, bullishSignal, lineSeperator);
+                string bullSignal = string.Format("{0} Bullish = {1}{2}", newSymbol, smaIsRising, lineSeperator);
                 outputData.Strategy1Output.Text += bullSignal;
 
                 // Bearish Signal
-                string bearignal = string.Format("{0} Bearish = {1}{2}", newSymbol, bearishSignal, lineSeperator);
-                outputData.Strategy1Output.Text += bullSignal;
+                string bearignal = string.Format("{0} Bearish = {1}{2}", newSymbol, smaIsFalling, lineSeperator);
+                outputData.Strategy1Output.Text += bearignal;
 
                 // Fib levels
                 string plus618Fib = string.Format("{0} 0.618 = {1}{2}", newSymbol, fib618, lineSeperator);
@@ -164,7 +164,7 @@ namespace PoloniexAutoTrader.Strategies
                 // Current Volume over average
                 if (dailyVolume > avgVolume)
                 {
-                    string avgVol = string.Format("{0} High than average volume{1}", newSymbol, lineSeperator);
+                    string avgVol = string.Format("{0} Higher than average volume{1}", newSymbol, lineSeperator);
                     outputData.Strategy1Output.Text += avgVol;
                 }                               
             }
