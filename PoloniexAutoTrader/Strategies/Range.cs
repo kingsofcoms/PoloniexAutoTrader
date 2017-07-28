@@ -66,7 +66,7 @@ namespace PoloniexAutoTrader.Strategies
 
             foreach (var trade in opentrades)
             {
-                double percentChange = ((currentTickerPrice - trade.PricePerCoin) / currentTickerPrice);
+                double percentChange = Math.Round(((currentTickerPrice - trade.PricePerCoin) / trade.PricePerCoin) * 100,4);
 
                 if (trade.Type == OrderType.Buy && percentChange >= 0.05)
                 {
@@ -75,7 +75,7 @@ namespace PoloniexAutoTrader.Strategies
                     Debug.WriteLine(buyPercentageData);
                     outputData.Strategy1Output.Text += buyPercentageData;
                 }
-                else if (trade.Type == OrderType.Sell && percentChange <= 0.05)
+                else if (trade.Type == OrderType.Sell && percentChange <= -0.05)
                 {
                     // Close position if > 5% profit
                     string sellPercentageData = string.Format("{0} | Entry Price {1} | Profit {2}%" + "\n" + lineSeperator + "\n", trade.Type, trade.PricePerCoin, percentChange);

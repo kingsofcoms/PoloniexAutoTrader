@@ -146,13 +146,13 @@ namespace PoloniexAutoTrader.Indicators
         {
             double fib618negative = 0; // Array index [0]
 
-            double high = 0; // [1]
-            double low = 0; // [2]
+            double high = 0; // [6]
+            double low = 0; // [1]
             
-            double fib382 = 0; // [3]
-            double fib500 = 0; // [4]
-            double fib618 = 0; // [5]
-            double fib1618 = 0; // [6]
+            double fib382 = 0; // [2]
+            double fib500 = 0; // [3]
+            double fib618 = 0; // [4]
+            double fib1618 = 0; // [5]
 
             for (var i = index; i > (index - period); i--)
             {
@@ -167,7 +167,7 @@ namespace PoloniexAutoTrader.Indicators
             }
 
             return new[] {
-                fib618negative, high, low, fib382, fib500, fib618, fib1618
+                fib618negative, low, fib382, fib500, fib618, fib1618, high
             };
         }
 

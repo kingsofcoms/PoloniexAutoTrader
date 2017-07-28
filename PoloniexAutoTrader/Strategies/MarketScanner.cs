@@ -14,10 +14,11 @@ namespace PoloniexAutoTrader.Strategies
         double topBuyPrice;
         double topSellPrice;
         double currentTickerPrice;
-        string lineSeperator = "-------------------";
+        string lineSeperator = "\n" + "-------------------" + "\n";
+        string newline = Environment.NewLine;
         static IList<IMarketChartData> candleInfo;
         static CurrencyPair newSymbol;
-
+        private double dailyVolume;
 
         public MarketScanner(string strategyName, MarketPeriod marketSeries, CurrencyPair symbol, bool? buy, bool? sell, double total) : base(strategyName, marketSeries, symbol, buy, sell, total)
         {
@@ -36,11 +37,13 @@ namespace PoloniexAutoTrader.Strategies
             // Last ticker price
             if (ticker.MarketData.Volume24HourBase > 2000)
             {
-                Debug.WriteLine("TOP BUY " + ticker.MarketData.OrderTopBuy);
-                Debug.WriteLine("TOP SELL " + ticker.MarketData.OrderTopSell);
+                //Debug.WriteLine("TOP BUY " + ticker.MarketData.OrderTopBuy);
+                //Debug.WriteLine("TOP SELL " + ticker.MarketData.OrderTopSell);
 
                 topBuyPrice = ticker.MarketData.OrderTopBuy;
                 topSellPrice = ticker.MarketData.OrderTopSell;
+                currentTickerPrice = ticker.MarketData.PriceLast;
+                dailyVolume = ticker.MarketData.Volume24HourBase;
             }
         }
 
@@ -98,6 +101,8 @@ namespace PoloniexAutoTrader.Strategies
 
                 // ABR Calculation
                 double ABR = Indicators.Indicator.ABR(candleInfo, index, period);
+                // Average Volume
+                double avgVolume = Indicators.Indicator.AverageVolumeBase(candleInfo, index, period);
                 // Last SMA value
                 double SMA = Indicators.Indicator.GetBollingerBandsWithSimpleMovingAverage(candleInfo, index, period)[0];
                 // Previous SMA value
@@ -106,6 +111,12 @@ namespace PoloniexAutoTrader.Strategies
                 double SMA2 = Indicators.Indicator.GetBollingerBandsWithSimpleMovingAverage(candleInfo, index, slowPeriod)[0];
                 // Previous SMA 2 value
                 double previousSMA2 = Indicators.Indicator.GetBollingerBandsWithSimpleMovingAverage(candleInfo, index - 1, slowPeriod)[0];
+
+                // Fib Levels
+                // 0.618
+                double fib618 = Indicators.Indicator.FibLevels(candleInfo, index - 1, slowPeriod)[4];
+                // Minus 0.618
+                double minusfib618 = Indicators.Indicator.FibLevels(candleInfo, index - 1, slowPeriod)[0];
 
                 // CLOSE UNDER / OVER SMA
                 // SMA last > previous = Bullish
@@ -120,22 +131,43 @@ namespace PoloniexAutoTrader.Strategies
                 bool bearishCross = Bearishrossver(SMA, SMA2, previousSMA, previousSMA2);
 
                 // Candle close under SMA previous & Then close over SMA last.
-                var bullishSignal = candleInfo[index - 1].Low < previousSMA && candleInfo[index].Close > SMA;
+                var bullishSignal = candleInfo[index].Close > SMA && smaIsRising;
                 // Candle close over SMA previous & Then close under SMA last.
-                var bearishSignal = candleInfo[index - 1].High > previousSMA && candleInfo[index].Close < SMA;
+                var bearishSignal = candleInfo[index].Close < SMA && smaIsFalling;
 
                 // Output IBS to datawindow
-                outputData.Strategy1Output.Text += newSymbol + "\n" + "SMA at Index" + "\n" + SMA + "\n" + "Candle Close at Index" + "\n" + candleInfo[index].Close
-                    + "\n" + candleInfo[index].Time + "\n" + lineSeperator + "\n";
+                // **** Testing (index - 1) in indicator or using (index -1) in strategy ****
+                string smaIndexTest = string.Format("{0} SMA at Index {1} {2} {1} Candle Close at Index {1} {3} {1} {4} {5}", newSymbol, newline, SMA, candleInfo[index].Close, candleInfo[index].Time, lineSeperator);
+                string smaIndexTest2 = string.Format("{0} SMA at Index {1} {2} {1} Candle Close at Index {1} {3} {1} {4} {5}", newSymbol, newline, SMA, candleInfo[index-1].Close, candleInfo[index-1].Time, lineSeperator);
 
-                outputData.Strategy1Output.Text += newSymbol + "\n" + "SMA at Index -1" + "\n" + previousSMA + "\n" + "Candle Close at Index - 1" + "\n" + candleInfo[index - 1].Close
-                    + "\n" + candleInfo[index - 1].Time + "\n" + lineSeperator + "\n";
+                Debug.WriteLine(smaIndexTest);
+                Debug.WriteLine(smaIndexTest2);
 
                 // ABR
-                outputData.Strategy1Output.Text += newSymbol + "\n" + "ABR" + "\n" + ABR.ToStringNormalized() + "\n" + lineSeperator + "\n";
+                string abrString = string.Format("{0} ABR = {1}{2}", newSymbol, ABR.ToStringNormalized(), lineSeperator);
 
+                //Bullish Signal
+                string bullSignal = string.Format("{0} Bullish = {1}{2}", newSymbol, bullishSignal, lineSeperator);
+                outputData.Strategy1Output.Text += bullSignal;
+
+                // Bearish Signal
+                string bearignal = string.Format("{0} Bearish = {1}{2}", newSymbol, bearishSignal, lineSeperator);
+                outputData.Strategy1Output.Text += bullSignal;
+
+                // Fib levels
+                string plus618Fib = string.Format("{0} 0.618 = {1}{2}", newSymbol, fib618, lineSeperator);
+                outputData.Strategy1Output.Text += plus618Fib;
+
+                string minus618Fib = string.Format("{0} Minus 0.618 = {1}{2}", newSymbol, minusfib618, lineSeperator);
+                outputData.Strategy1Output.Text += minus618Fib;
+
+                // Current Volume over average
+                if (dailyVolume > avgVolume)
+                {
+                    string avgVol = string.Format("{0} High than average volume{1}", newSymbol, lineSeperator);
+                    outputData.Strategy1Output.Text += avgVol;
+                }                               
             }
-
         }
 
         // Check to see if SMA value is higher than SMA Value (x) bars ago (lookback period)
@@ -159,7 +191,7 @@ namespace PoloniexAutoTrader.Strategies
                 }
             }
             // Output to debug to check values are correct
-            Debug.WriteLine("{4} Is Rising = {0} | SMA {1} | Previous SMA {2} | {3} Bars ago", smaIsRising, SMA.ToStringNormalized(), previousSMA.ToStringNormalized(), lookBack, newSymbol);
+            //Debug.WriteLine("{4} Is Rising = {0} | SMA {1} | Previous SMA {2} | {3} Bars ago", smaIsRising, SMA.ToStringNormalized(), previousSMA.ToStringNormalized(), lookBack, newSymbol);
 
             return smaIsRising;
         }
@@ -186,7 +218,7 @@ namespace PoloniexAutoTrader.Strategies
             }
 
             // Output to debug to check values are correct
-            Debug.WriteLine("{4} Is Falling = {0} | SMA {1} | Previous SMA {2} | {3} Bars ago", smaIsFalling, SMA.ToStringNormalized(), previousSMA.ToStringNormalized(), lookBack, newSymbol);
+            //Debug.WriteLine("{4} Is Falling = {0} | SMA {1} | Previous SMA {2} | {3} Bars ago", smaIsFalling, SMA.ToStringNormalized(), previousSMA.ToStringNormalized(), lookBack, newSymbol);
 
             return smaIsFalling;
         }
@@ -200,6 +232,10 @@ namespace PoloniexAutoTrader.Strategies
             {
                 bullishCross = true;
             }
+
+            // Output to debug to check values are correct
+            //Debug.WriteLine("{1} BullishCross = {0}", bullishCross, newSymbol);
+
             return bullishCross;
         }
 
@@ -212,6 +248,10 @@ namespace PoloniexAutoTrader.Strategies
             {
                 bearishCross = true;
             }
+
+            // Output to debug to check values are correct
+            // Debug.WriteLine("{1} BearishCross = {0}", bearishCross, newSymbol);
+
             return bearishCross;
         }
 
