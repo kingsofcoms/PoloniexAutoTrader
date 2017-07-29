@@ -140,7 +140,7 @@ namespace PoloniexAutoTrader.Strategies
                 bool bearishCross = Bearishrossver(SMA, SMA2, previousSMA, previousSMA2);
 
                 // Candle close under SMA previous & Then close over SMA last.
-                if (candleInfo[index].Close > SMA && smaIsRising)
+                if ((candleInfo[index].Close > SMA) && smaIsRising)
                 {
                     bullishSignal = true;
                 }
@@ -149,7 +149,7 @@ namespace PoloniexAutoTrader.Strategies
                     bullishSignal = false;
                 }
                 // Candle close over SMA previous & Then close under SMA last.
-                if (candleInfo[index].Close < SMA && smaIsFalling)
+                if ((candleInfo[index].Close < SMA) && smaIsFalling)
                 {
                     bearishSignal = true;
                 }
@@ -179,10 +179,10 @@ namespace PoloniexAutoTrader.Strategies
                 outputData.Strategy1Output.Text += bearSignal;
 
                 // Fib levels
-                string plus618Fib = string.Format("{0} 0.618 = {1}{2}", newSymbol, fib618, lineSeperator);
+                string plus618Fib = string.Format("{0} 0.618 = {1}{2}", newSymbol, fib618.ToStringNormalized(), lineSeperator);
                 outputData.Strategy1Output.Text += plus618Fib;
 
-                string minus618Fib = string.Format("{0} Minus 0.618 = {1}{2}", newSymbol, minusfib618, lineSeperator);
+                string minus618Fib = string.Format("{0} Minus 0.618 = {1}{2}", newSymbol, minusfib618.ToStringNormalized(), lineSeperator);
                 outputData.Strategy1Output.Text += minus618Fib;
 
                 // Current Volume over average
