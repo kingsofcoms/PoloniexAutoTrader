@@ -61,6 +61,9 @@ namespace PoloniexAutoTrader.Strategies
             // Find all pairs with bullish / bearish cross
             // Find all pairs above / below SMA
 
+            bool bullishSignal = false;
+            bool bearishSignal = false;
+
             DateTime startdate = new DateTime(2017, 1, 1);
             DateTime enddate = new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, DateTime.UtcNow.Day, DateTime.UtcNow.Hour, DateTime.UtcNow.Minute, 0);
 
@@ -93,7 +96,7 @@ namespace PoloniexAutoTrader.Strategies
                 // Get data index -1
                 var index = candleInfo.Count() - 1;
                 // Set MA Period
-                int period = 50;
+                int period = 20;
                 // Set MA Period 2
                 int slowPeriod = 20;
                 // Lookback period
@@ -114,15 +117,21 @@ namespace PoloniexAutoTrader.Strategies
 
                 // Fib Levels
                 // 0.618
-                double fib618 = Indicators.Indicator.FibLevels(candleInfo, index - 1, slowPeriod)[4];
+                double fib618 = Indicators.Indicator.FibLevels(candleInfo, index, slowPeriod)[4];
                 // Minus 0.618
-                double minusfib618 = Indicators.Indicator.FibLevels(candleInfo, index - 1, slowPeriod)[0];
+                double minusfib618 = Indicators.Indicator.FibLevels(candleInfo, index, slowPeriod)[0];
 
                 // CLOSE UNDER / OVER SMA
                 // SMA last > previous = Bullish
                 bool smaIsRising = IsRising(index, lookBack, period);
+                // Rising Test
+                string risingString = string.Format("{0} Rising = {1}{2}", newSymbol, smaIsRising, lineSeperator);
+                outputData.Strategy1Output.Text += risingString;
+                // Falling Test                
                 // SMA last < previous = Bearish
                 bool smaIsFalling = IsFalling(index, lookBack, period);
+                string fallingString = string.Format("{0} Falling = {1}{2}", newSymbol, smaIsFalling, lineSeperator);
+                outputData.Strategy1Output.Text += fallingString;
 
                 // MA CROSSOVER
                 // SMA previous under SMA 2 previous, SMA over SMA2 last value
@@ -131,9 +140,23 @@ namespace PoloniexAutoTrader.Strategies
                 bool bearishCross = Bearishrossver(SMA, SMA2, previousSMA, previousSMA2);
 
                 // Candle close under SMA previous & Then close over SMA last.
-                var bullishSignal = candleInfo[index].Close > SMA && smaIsRising;
+                if (candleInfo[index].Close > SMA && smaIsRising)
+                {
+                    bullishSignal = true;
+                }
+                else
+                {
+                    bullishSignal = false;
+                }
                 // Candle close over SMA previous & Then close under SMA last.
-                var bearishSignal = candleInfo[index].Close < SMA && smaIsFalling;
+                if (candleInfo[index].Close < SMA && smaIsFalling)
+                {
+                    bearishSignal = true;
+                }
+                else
+                {
+                    bearishSignal = false;
+                }
 
                 // Output IBS to datawindow
                 // **** Testing (index - 1) in indicator or using (index -1) in strategy ****
@@ -145,14 +168,15 @@ namespace PoloniexAutoTrader.Strategies
 
                 // ABR
                 string abrString = string.Format("{0} ABR = {1}{2}", newSymbol, ABR.ToStringNormalized(), lineSeperator);
+                outputData.Strategy1Output.Text += abrString;
 
                 //Bullish Signal
-                string bullSignal = string.Format("{0} Bullish = {1}{2}", newSymbol, smaIsRising, lineSeperator);
+                string bullSignal = string.Format("{0} Bullish = {1}{2}", newSymbol, bullishSignal, lineSeperator);
                 outputData.Strategy1Output.Text += bullSignal;
 
                 // Bearish Signal
-                string bearignal = string.Format("{0} Bearish = {1}{2}", newSymbol, smaIsFalling, lineSeperator);
-                outputData.Strategy1Output.Text += bearignal;
+                string bearSignal = string.Format("{0} Bearish = {1}{2}", newSymbol, bearishSignal, lineSeperator);
+                outputData.Strategy1Output.Text += bearSignal;
 
                 // Fib levels
                 string plus618Fib = string.Format("{0} 0.618 = {1}{2}", newSymbol, fib618, lineSeperator);
@@ -171,9 +195,8 @@ namespace PoloniexAutoTrader.Strategies
         }
 
         // Check to see if SMA value is higher than SMA Value (x) bars ago (lookback period)
-        static bool IsRising(int index, int lookBack, int period)
+        bool IsRising(int index, int lookBack, int period)
         {
-            bool smaIsRising = false;
             double SMA = 0;
             double previousSMA = 0;
 
@@ -187,19 +210,15 @@ namespace PoloniexAutoTrader.Strategies
 
                 if (SMA > previousSMA)
                 {
-                    smaIsRising = true;
-                }
+                    return true;
+                }                              
             }
-            // Output to debug to check values are correct
-            //Debug.WriteLine("{4} Is Rising = {0} | SMA {1} | Previous SMA {2} | {3} Bars ago", smaIsRising, SMA.ToStringNormalized(), previousSMA.ToStringNormalized(), lookBack, newSymbol);
-
-            return smaIsRising;
+            return false;
         }
 
         // Check to see if SMA value is lower than SMA Value (x) bars ago (lookback period)
-        static bool IsFalling(int index, int lookBack, int period)
+        bool IsFalling(int index, int lookBack, int period)
         {
-            bool smaIsFalling = false;
             double SMA = 0;
             double previousSMA = 0;
 
@@ -213,46 +232,44 @@ namespace PoloniexAutoTrader.Strategies
 
                 if (SMA < previousSMA)
                 {
-                    smaIsFalling = true;
-                }
+                    return true;
+                }               
             }
+
+            return false;
 
             // Output to debug to check values are correct
             //Debug.WriteLine("{4} Is Falling = {0} | SMA {1} | Previous SMA {2} | {3} Bars ago", smaIsFalling, SMA.ToStringNormalized(), previousSMA.ToStringNormalized(), lookBack, newSymbol);
-
-            return smaIsFalling;
         }
 
         // Check if Fast SMA has crossed above slow SMA
         static bool BullishCrossver(double SMA, double SMA2, double previousSMA, double previousSMA2)
         {
             // CROSS OVER
-            bool bullishCross = false;
             if (previousSMA < previousSMA2 && SMA >= SMA2)
             {
-                bullishCross = true;
+                return true;
             }
+
+            return false;
 
             // Output to debug to check values are correct
             //Debug.WriteLine("{1} BullishCross = {0}", bullishCross, newSymbol);
-
-            return bullishCross;
         }
 
         // Check if Fast SMA has cross below slow SMA
         static bool Bearishrossver(double SMA, double SMA2, double previousSMA, double previousSMA2)
         {
             // CROSS OVER
-            bool bearishCross = false;
             if (previousSMA > previousSMA2 && SMA <= SMA2)
             {
-                bearishCross = true;
+                return true;
             }
+
+            return false;
 
             // Output to debug to check values are correct
             // Debug.WriteLine("{1} BearishCross = {0}", bearishCross, newSymbol);
-
-            return bearishCross;
         }
 
 
