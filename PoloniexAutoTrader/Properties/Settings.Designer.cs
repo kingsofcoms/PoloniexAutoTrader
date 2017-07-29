@@ -25,7 +25,7 @@ namespace PoloniexAutoTrader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ERUEZZ0C-K0VW64N8-CHX99HJ5-1889IP0M")]
+        [global::System.Configuration.DefaultSettingValueAttribute("FPLU3UG2-0JESWKO0-BTO7M7VG-T5YY5RBA")]
         public string PublicKey {
             get {
                 return ((string)(this["PublicKey"]));
@@ -37,8 +37,8 @@ namespace PoloniexAutoTrader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("d060605f1efbf2aa3e9ea64dedd387204bf1fb168828f8df9487432cae1563699351ebc6151f25d45" +
-            "b40d7a42d8e8c95eb03b2f52f9a65e46c563c6244cdf494")]
+        [global::System.Configuration.DefaultSettingValueAttribute("10b86d1251e795bdd5df6e18084f79a6d02423a68e2506fe7621be3f710c104802eefb0e2e591807e" +
+            "a534daad5450ff12d1fe81bd50094177846a39e3f4a2153")]
         public string PrivateKey {
             get {
                 return ((string)(this["PrivateKey"]));
