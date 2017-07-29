@@ -20,8 +20,8 @@ namespace PoloniexAutoTrader
 
         private async void SaveApiKeys_Click(object sender, RoutedEventArgs e)
         {
-            Properties.Settings.Default.PublicKey = PublicKey_Text.Text.ToString();
-            Properties.Settings.Default.PrivateKey = PrivateKey_Text.Text.ToString();
+            Properties.Settings.Default.PublicKey = PublicKey_Text.Text;
+            Properties.Settings.Default.PrivateKey = PrivateKey_Text.Text;
             Properties.Settings.Default.Save();
 
 
