@@ -95,7 +95,6 @@ namespace PoloniexAutoTrader
         //MarketSeries ComboBox
         private void MarketSeriesSelect_Loaded(object sender, RoutedEventArgs e)
         {
-            // ... A List.
             List<MarketPeriod> marketseriesList = new List<MarketPeriod>
             {
                 MarketPeriod.Minutes5,
@@ -112,7 +111,6 @@ namespace PoloniexAutoTrader
             comboBox.ItemsSource = marketseriesList;
 
             comboBox.SelectedIndex = 5;
-
         }
 
         //MarketSeries ComboBox Selection
@@ -139,11 +137,9 @@ namespace PoloniexAutoTrader
             Handle(sender as CheckBox);
         }
 
-
-        //
-#pragma warning disable RECS0154 // Parameter is never used
+        #pragma warning disable RECS0154 // Parameter is never used
         void Handle(CheckBox checkBox)
-#pragma warning restore RECS0154 // Parameter is never used
+        #pragma warning restore RECS0154 // Parameter is never used
         {
             // Refresh balance
             //BalanceGrid.Items.Refresh();
@@ -186,7 +182,7 @@ namespace PoloniexAutoTrader
 
         //***************************************************************************************
 
-        private async Task DialogBoxStrategy(string strategyName, string state)
+        async Task DialogBoxStrategy(string strategyName, string state)
         {
             var mySettings = new MetroDialogSettings()
             {
@@ -200,7 +196,7 @@ namespace PoloniexAutoTrader
             if (result == MessageDialogResult.Affirmative)
             {
                 // Run Strategy 1
-            }        
+            }
 
         }
 

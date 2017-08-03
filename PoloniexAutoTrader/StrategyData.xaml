@@ -5,7 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        Title="Strategy 1 Data" Height="400" Width="350">
+        Title="Strategy 1 Data"
+        Height="400" Width="450"
+        BorderThickness="2">
+    
     <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto" ScrollViewer.HorizontalScrollBarVisibility="Auto">
         <Grid>
         <Grid.ColumnDefinitions>
