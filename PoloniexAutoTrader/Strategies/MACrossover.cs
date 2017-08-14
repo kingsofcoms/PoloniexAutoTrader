@@ -11,7 +11,8 @@ namespace PoloniexAutoTrader.Strategies
     {
         double topBuyPrice;
         double topSellPrice;
-        string lineSeperator = "-------------------";
+        string lineSeperator = "\n" + "-------------------" + "\n";
+        string newline = Environment.NewLine;
 
         public MACrossover(string strategyName, MarketPeriod marketSeries, CurrencyPair symbol, bool? buy, bool? sell, double volume) : base(strategyName, marketSeries, symbol, buy, sell, volume)
         {
@@ -36,10 +37,6 @@ namespace PoloniexAutoTrader.Strategies
 
             if (ticker.CurrencyPair == Symbol)
             {
-
-                Debug.WriteLine("TOP BUY " + ticker.MarketData.OrderTopBuy);
-                Debug.WriteLine("TOP SELL " + ticker.MarketData.OrderTopSell);
-
                 topBuyPrice = ticker.MarketData.OrderTopBuy;
                 topSellPrice = ticker.MarketData.OrderTopSell;
             }
@@ -64,6 +61,8 @@ namespace PoloniexAutoTrader.Strategies
             int period = 9;
             // Set MA Period 2
             int slowPeriod = 28;
+            // Lookback period
+            int lookBack = 5;
 
             // ABR Calculation
             double ABR = Indicators.Indicator.ABR(candleInfo, index, period);
@@ -82,9 +81,9 @@ namespace PoloniexAutoTrader.Strategies
 
             // CLOSE UNDER / OVER SMA
             // SMA last > previous = Bullish
-            bool smaIsRising = IsRising(SMA, previousSMA);
+            bool smaIsRising = Indicators.Indicator.IsRising(SMA, previousSMA);
             // SMA last < previous = Bearish
-            bool smaIsFalling = IsFalling(SMA, previousSMA);
+            bool smaIsFalling = Indicators.Indicator.IsFalling(SMA, previousSMA);
 
             // MA CROSSOVER
             // SMA previous under SMA 2 previous, SMA over SMA2 last value
@@ -93,27 +92,27 @@ namespace PoloniexAutoTrader.Strategies
             bool bearishCross = Bearishrossver(SMA, SMA2, previousSMA, previousSMA2);
 
             // Candle close under SMA previous & Then close over SMA last.
-            var bullishSignal = candleInfo[index - 1].Close < previousSMA && candleInfo[index].Close > SMA;
+            var bullishSignal = (candleInfo[index - 1].Close < previousSMA) && (candleInfo[index].Close > SMA);
             // Candle close over SMA previous & Then close under SMA last.
-            var bearishSignal = candleInfo[index - 1].Close > previousSMA && candleInfo[index].Close < SMA;
+            var bearishSignal = (candleInfo[index - 1].Close > previousSMA) && (candleInfo[index].Close < SMA);
 
-            // Output IBS to datawindow
-            outputData.Strategy1Output.Text += "SMA at Index" + "\n" + SMA + "\n" + "Candle Close at Index" + "\n" + candleInfo[index].Close
-                + "\n" + candleInfo[index].Time + "\n" + lineSeperator + "\n";
+            // Output Test Index to datawindow
+            string smaIndexTest = string.Format("{0} SMA at Index {1} {2} {1} Candle Close at Index {1} {3} {1} {4} {5}", Symbol, newline, SMA, candleInfo[index].Close, candleInfo[index].Time, lineSeperator);
+            string smaIndexTest2 = string.Format("{0} SMA at Index {1} {2} {1} Candle Close at Index {1} {3} {1} {4} {5}", Symbol, newline, SMA, candleInfo[index - 1].Close, candleInfo[index - 1].Time, lineSeperator);
 
-            outputData.Strategy1Output.Text += "SMA at Index -1" + "\n" + previousSMA + "\n" + "Candle Close at Index - 1" + "\n" + candleInfo[index - 1].Close
-                + "\n" + candleInfo[index - 1].Time + "\n" + lineSeperator + "\n";
 
             // ABR
-            outputData.Strategy1Output.Text += "ABR" + "\n" + ABR.ToStringNormalized() + "\n" + lineSeperator + "\n";
+            string abrString = string.Format("{0} ABR = {1}{2}", Symbol, ABR.ToStringNormalized(), lineSeperator);
+            outputData.Strategy1Output.Text += abrString;
 
             // Bollinger Bands
-            outputData.Strategy1Output.Text += "B Band Top" + "\n" + bBandTop + "\n" + lineSeperator + "\n";
-            outputData.Strategy1Output.Text += "SMA" + "\n" + SMA + "\n" + lineSeperator + "\n";
-            outputData.Strategy1Output.Text += "B Band Bottom" + "\n" + bBandBottom + "\n" + lineSeperator + "\n";
+            string topBBand = string.Format("{0} Top BBand = {1}{2}", Symbol, bBandTop.ToStringNormalized(), lineSeperator);
+            string middleBBand = string.Format("{0} Mid BBand = {1}{2}", Symbol, SMA.ToStringNormalized(), lineSeperator);
+            string lowerBBand = string.Format("{0} Lower BBand = {1}{2}", Symbol, bBandBottom.ToStringNormalized(), lineSeperator);
+            outputData.Strategy1Output.Text += topBBand;
+            outputData.Strategy1Output.Text += middleBBand;
+            outputData.Strategy1Output.Text += lowerBBand;
 
-
-            // Output IBS to datawindow
 
             // 0.15% fee
             if ((bool)Buy)
@@ -122,9 +121,9 @@ namespace PoloniexAutoTrader.Strategies
                 {
                     var volume = quantity.TotalToQuantity(Total, topBuyPrice);
                     await marketOrder.ExecuteMarketOrder(Symbol, OrderType.Buy, volume);
-                    // Output IBS to datawindow
 
-                    string tradeOutputBuy = DateTime.Now + "\n" + "Volume = " + volume + "\n" + OrderType.Buy + "\n" + "Bullish Cross = " + bullishCross + "\n" + lineSeperator + "\n";
+                    string tradeOutputBuy = String.Format("{0} {1} Volume = {2} {1} {3} {1} Bullish Cross = {4} {5}", DateTime.UtcNow, newline, volume, OrderType.Buy, bullishCross, lineSeperator);
+                        
                     Debug.WriteLine(tradeOutputBuy);
                     outputData.Strategy1Output.Text += tradeOutputBuy;
                 }
@@ -133,7 +132,6 @@ namespace PoloniexAutoTrader.Strategies
             // 0.25% fee
             if ((bool)Sell)
             {
-                //if (bearishSignal && smaIsFalling)
                 if (bearishCross)
                 {
                     var quoteBalance = balance.GetBalance(Symbol.QuoteCurrency);
@@ -144,8 +142,8 @@ namespace PoloniexAutoTrader.Strategies
                         var volume = quantity.TotalToQuantity(Total, topSellPrice);
                         await marketOrder.ExecuteMarketOrder(Symbol, OrderType.Sell, volume);
 
-                        // Output IBS to datawindow
-                        string tradeOutputSell = DateTime.Now + "\n" + "Volume = " + volume + "\n" + OrderType.Sell + "\n" + "Bearish Cross = " + bearishCross + "\n" + lineSeperator + "\n";
+                        string tradeOutputSell = String.Format("{0} {1} Volume = {2} {1} {3} {1} Bearish Cross = {4} {5}", DateTime.UtcNow, newline, volume, OrderType.Buy, bearishCross, lineSeperator);
+
                         Debug.WriteLine(tradeOutputSell);
                         outputData.Strategy1Output.Text += tradeOutputSell;
                     }
@@ -153,48 +151,28 @@ namespace PoloniexAutoTrader.Strategies
             }
         }
 
-        static bool IsRising(double SMA, double previousSMA)
-        {
-            bool smaIsRising = false;
+        
 
-            if (SMA > previousSMA)
-            {
-                smaIsRising = true;
-            }
-            return smaIsRising;
-        }
-
-        static bool IsFalling(double SMA, double previousSMA)
-        {
-            bool smaIsFalling = false;
-
-            if (SMA < previousSMA)
-            {
-                smaIsFalling = true;
-            }
-            return smaIsFalling;
-        }
-
+        // Check if Fast SMA has crossed above slow SMA
         static bool BullishCrossver(double SMA, double SMA2, double previousSMA, double previousSMA2)
         {
             // CROSS OVER
-            bool bullishCross = false;
-            if (previousSMA < previousSMA2 && SMA > SMA2)
+            if ((previousSMA < previousSMA2) && SMA >= SMA2)
             {
-                bullishCross = true;
+                return true;
             }
-            return bullishCross;
+            return false;
         }
 
+        // Check if Fast SMA has cross below slow SMA
         static bool Bearishrossver(double SMA, double SMA2, double previousSMA, double previousSMA2)
         {
-            // CROSS UNDER
-            bool bearishCross = false;
-            if (previousSMA > previousSMA2 && SMA < SMA2)
+            // CROSS OVER
+            if ((previousSMA > previousSMA2) && SMA <= SMA2)
             {
-                bearishCross = true;
+                return true;
             }
-            return bearishCross;
+            return false;
         }
 
     }

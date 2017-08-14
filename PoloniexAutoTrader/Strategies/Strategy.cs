@@ -102,7 +102,6 @@ namespace PoloniexAutoTrader
 
         public void Stop()
         {
-            // you can call this method from your stratigies instances
             dispatcherTimer.Stop();
            // Client.PoloniexClient.Live.Stop();
 

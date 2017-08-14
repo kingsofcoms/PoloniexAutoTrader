@@ -4,7 +4,6 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace PoloniexAutoTrader.Strategies
 {
@@ -15,7 +14,8 @@ namespace PoloniexAutoTrader.Strategies
         double tickerPricePercentageChange;
         double tickerPriceLast;
         bool symbolOk;
-        string lineSeperator = "-------------------";
+        string lineSeperator = "\n" + "-------------------" + "\n";
+        string newLine = Environment.NewLine;
 
         public PercentageTrader(string strategyName, MarketPeriod marketSeries, CurrencyPair symbol, bool? buy, bool? sell, double volume) : base(strategyName, marketSeries, symbol, buy, sell, volume)
         {
@@ -42,25 +42,12 @@ namespace PoloniexAutoTrader.Strategies
             {
                 symbolOk = true;
 
-                Debug.WriteLine("TOP BUY " + ticker.MarketData.OrderTopBuy);
-
-                Debug.WriteLine("TOP SELL " + ticker.MarketData.OrderTopSell);
-
                 topBuyPrice = ticker.MarketData.OrderTopBuy;
                 topSellPrice = ticker.MarketData.OrderTopSell;
 
                 tickerPricePercentageChange = ticker.MarketData.PriceChangePercentage;
                 tickerPriceLast = ticker.MarketData.PriceLast;
-
             }
-
-            //PercentChange(ticker);
-
-        }
-
-        public override void OnStop()
-        {
-
         }
 
         // Percentage Change
@@ -81,18 +68,25 @@ namespace PoloniexAutoTrader.Strategies
                 //double percentChange = Math.Round(((tickerPricePercentageChange - lastClose) / tickerPricePercentageChange) * 100, 4);
                 double percentChange = Math.Round(((tickerPriceLast - lastClose) / tickerPriceLast) * 100, 4);
 
+                // DT Now
+                string timeNow = DateTime.Now.ToString();
+
                 // Output IBS to datawindow 
+                string percentChangeStr = string.Format("{0} Percentage Change = {1} | {2}{3}", Symbol, percentChange, timeNow, lineSeperator);
+                string tickerChangeStr = string.Format("{0} Ticker Change Change = {1} | {2}{3}", Symbol, tickerPricePercentageChange, timeNow, lineSeperator);
+                string lastCloseStr = string.Format("{0} Last Close = {1} | {2}{3}", Symbol, lastClose, timeNow, lineSeperator);
+                string lastTickerStr = string.Format("{0} Last Ticker Price = {1} | {2}{3}", Symbol, tickerPriceLast, timeNow, lineSeperator);
 
                 outputData.Dispatcher.Invoke(new Action(() =>
-               {
-                   outputData.Strategy1Output.Text += "Percentage Change" + "\n" + percentChange + "\n" + DateTime.Now.ToString() + "\n" + lineSeperator + "\n";
-                   outputData.Strategy1Output.Text += "Ticker Change" + "\n" + tickerPricePercentageChange + "\n" + DateTime.Now.ToString() + "\n" + lineSeperator + "\n";
-                   outputData.Strategy1Output.Text += "Last Close" + "\n" + lastClose + "\n" + candleSeries[index].Time + "\n" + lineSeperator + "\n";
-                   outputData.Strategy1Output.Text += "Last Ticker Price" + "\n" + tickerPriceLast + "\n" + DateTime.Now.ToString() + "\n" + lineSeperator + "\n";
+               {                                  
+                   outputData.Strategy1Output.Text += percentChangeStr;
+                   outputData.Strategy1Output.Text += tickerChangeStr;
+                   outputData.Strategy1Output.Text += lastCloseStr;
+                   outputData.Strategy1Output.Text += lastTickerStr;
                }));
 
 
-                //Buy
+                //  ************** TRADING LOGIC **************
                 try
                 {
                     if ((bool)Buy)
@@ -146,6 +140,11 @@ namespace PoloniexAutoTrader.Strategies
                     //MessageDialogue.Show("Order Error" + error.Message);
                 }
             }
+        }
+
+        public override void OnStop()
+        {
+
         }
     }
 }

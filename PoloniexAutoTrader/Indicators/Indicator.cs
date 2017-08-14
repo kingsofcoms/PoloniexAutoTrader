@@ -1,16 +1,7 @@
-﻿using Jojatekok.PoloniexAPI;
-using Jojatekok.PoloniexAPI.MarketTools;
-using PoloniexAutoTrader.Market;
-using PoloniexAutoTrader.Strategies;
-using PoloniexAutoTrader.Timers;
-using PoloniexAutoTrader.Trading;
-using PoloniexAutoTrader.Wallet;
+﻿using Jojatekok.PoloniexAPI.MarketTools;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace PoloniexAutoTrader.Indicators
 {
@@ -200,5 +191,68 @@ namespace PoloniexAutoTrader.Indicators
             return correlation;
         }
 
+        // Simple Version
+        public static bool IsRising(double SMA, double previousSMA)
+        {
+            if (SMA > previousSMA)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        // Simple Version
+        public static bool IsFalling(double SMA, double previousSMA)
+        {
+            if (SMA < previousSMA)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        // Check to see if SMA value is higher than SMA Value (x) bars ago (lookback period)
+        public static bool IsRising(this IList<IMarketChartData> value, int index, int lookBack, int period)
+        {
+            double SMA = 0;
+            double previousSMA = 0;
+
+            for (var i = index; i > (index - lookBack); i--)
+            {
+                // Last SMA value
+                SMA = GetBollingerBandsWithSimpleMovingAverage(value, index, period)[0];
+                // Previous SMA value
+                previousSMA = GetBollingerBandsWithSimpleMovingAverage(value, index - i, period)[0];
+
+                if (SMA > previousSMA)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        // Check to see if SMA value is lower than SMA Value (x) bars ago (lookback period)
+        public static bool IsFalling(this IList<IMarketChartData> value, int index, int lookBack, int period)
+        {
+            double SMA = 0;
+            double previousSMA = 0;
+
+            for (var i = index; i > (index - lookBack); i--)
+            {
+                // Last SMA value
+                SMA = GetBollingerBandsWithSimpleMovingAverage(value, index, period)[0];
+                // Previous SMA value
+                previousSMA = GetBollingerBandsWithSimpleMovingAverage(value, index - i, period)[0];
+
+                if (SMA < previousSMA)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
 }

@@ -11,7 +11,8 @@ namespace PoloniexAutoTrader.Strategies
     {
         double topBuyPrice;
         double topSellPrice;
-        string lineSeperator = "-------------------";
+        string lineSeperator = "\n" + "-------------------" + "\n";
+        string newline = Environment.NewLine;
 
         public RangeBreakout(string strategyName, MarketPeriod marketSeries, CurrencyPair symbol, bool? buy, bool? sell, double volume) : base(strategyName, marketSeries, symbol, buy, sell, volume)
         {
@@ -76,23 +77,27 @@ namespace PoloniexAutoTrader.Strategies
                 rangeLow += candleInfo[i].Low;
             }
 
+            // Range High
             double rangeHighAvg = Math.Round(rangeHigh, 7) / period;
-            double rangeLowAvg = Math.Round(rangeLow, 7) / period;
+            string rangeHighAvgStr = String.Format("Range High Avg{0} {1}", rangeHighAvg, lineSeperator);
+            outputData.Strategy1Output.Text += rangeHighAvgStr;
 
-            // Output IBS to datawindow
-            outputData.Strategy1Output.Text += "Range High Avg" + "\n" + rangeHighAvg + "\n" + lineSeperator + "\n";
-            outputData.Strategy1Output.Text += "Range Low Avg" + "\n" + rangeLowAvg + "\n" + lineSeperator + "\n";
+            // Range Low
+            double rangeLowAvg = Math.Round(rangeLow, 7) / period;
+            string rangeLowAvgStr = String.Format("Range Low Avg{0} {1}", rangeLowAvg, lineSeperator);
+            outputData.Strategy1Output.Text += rangeLowAvgStr;
 
             // ABR
-            outputData.Strategy1Output.Text += "ABR" + "\n" + ABR.ToStringNormalized() + "\n" + lineSeperator + "\n";
+            string abrString = string.Format("{0} ABR = {1}{2}", Symbol, ABR.ToStringNormalized(), lineSeperator);
+            outputData.Strategy1Output.Text += abrString;
 
             // Bollinger Bands
-            outputData.Strategy1Output.Text += "B Band Top" + "\n" + bBandTop + "\n" + lineSeperator + "\n";
-            outputData.Strategy1Output.Text += "SMA" + "\n" + SMA + "\n" + lineSeperator + "\n";
-            outputData.Strategy1Output.Text += "B Band Bottom" + "\n" + bBandBottom + "\n" + lineSeperator + "\n";
-
-
-            // Output IBS to datawindow
+            string topBBand = string.Format("{0} Top BBand = {1}{2}", Symbol, bBandTop.ToStringNormalized(), lineSeperator);
+            string middleBBand = string.Format("{0} Mid BBand = {1}{2}", Symbol, SMA.ToStringNormalized(), lineSeperator);
+            string lowerBBand = string.Format("{0} Lower BBand = {1}{2}", Symbol, bBandBottom.ToStringNormalized(), lineSeperator);
+            outputData.Strategy1Output.Text += topBBand;
+            outputData.Strategy1Output.Text += middleBBand;
+            outputData.Strategy1Output.Text += lowerBBand;
 
             // 0.15% fee
             if ((bool)Buy)

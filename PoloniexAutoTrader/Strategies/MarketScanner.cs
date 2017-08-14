@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Jojatekok.PoloniexAPI;
 using Jojatekok.PoloniexAPI.MarketTools;
-using System.Diagnostics;
 
 namespace PoloniexAutoTrader.Strategies
 {
@@ -19,6 +17,7 @@ namespace PoloniexAutoTrader.Strategies
         static IList<IMarketChartData> candleInfo;
         static CurrencyPair newSymbol;
         private double dailyVolume;
+        private double perenctChangeTick;
 
         public MarketScanner(string strategyName, MarketPeriod marketSeries, CurrencyPair symbol, bool? buy, bool? sell, double total) : base(strategyName, marketSeries, symbol, buy, sell, total)
         {
@@ -34,16 +33,14 @@ namespace PoloniexAutoTrader.Strategies
 
         public override void OnTick(TickerChangedEventArgs ticker)
         {
-            // Last ticker price
+            // Save ticker variables
             if (ticker.MarketData.Volume24HourBase > 2000)
             {
-                //Debug.WriteLine("TOP BUY " + ticker.MarketData.OrderTopBuy);
-                //Debug.WriteLine("TOP SELL " + ticker.MarketData.OrderTopSell);
-
                 topBuyPrice = ticker.MarketData.OrderTopBuy;
                 topSellPrice = ticker.MarketData.OrderTopSell;
                 currentTickerPrice = ticker.MarketData.PriceLast;
                 dailyVolume = ticker.MarketData.Volume24HourBase;
+                perenctChangeTick = ticker.MarketData.PriceChangePercentage;
             }
         }
 
@@ -52,7 +49,6 @@ namespace PoloniexAutoTrader.Strategies
             await MarketScan();
         }
 
-        // Percentage Change
         public async Task MarketScan()
         {
             // Scan all pairs
@@ -104,6 +100,8 @@ namespace PoloniexAutoTrader.Strategies
 
                 // ABR Calculation
                 double ABR = Indicators.Indicator.ABR(candleInfo, index, period);
+                // Rate of Change / ROC
+                double ROC = Indicators.Indicator.ROC(candleInfo, index, 1); // For Daily % change use 1 period
                 // Average Volume
                 double avgVolume = Indicators.Indicator.AverageVolumeBase(candleInfo, index, period);
                 // Last SMA value
@@ -139,7 +137,7 @@ namespace PoloniexAutoTrader.Strategies
                 // SMA previous over SMA 2 previous, SMA under SMA2 last value
                 bool bearishCross = Bearishrossver(SMA, SMA2, previousSMA, previousSMA2);
 
-                // Candle close under SMA previous & Then close over SMA last.
+                // Candle close over SMA previous & SMA is rising.
                 if ((candleInfo[index].Close > SMA) && smaIsRising)
                 {
                     bullishSignal = true;
@@ -148,7 +146,7 @@ namespace PoloniexAutoTrader.Strategies
                 {
                     bullishSignal = false;
                 }
-                // Candle close over SMA previous & Then close under SMA last.
+                // Candle close under SMA previous & SMA is falling.
                 if ((candleInfo[index].Close < SMA) && smaIsFalling)
                 {
                     bearishSignal = true;
@@ -169,6 +167,10 @@ namespace PoloniexAutoTrader.Strategies
                 // ABR
                 string abrString = string.Format("{0} ABR = {1}{2}", newSymbol, ABR.ToStringNormalized(), lineSeperator);
                 outputData.Strategy1Output.Text += abrString;
+
+                // ROC
+                string rocString = string.Format("{0} ROC % = {1}{2}", newSymbol, Math.Round(ROC,4), lineSeperator);
+                outputData.Strategy1Output.Text += rocString;
 
                 //Bullish Signal
                 string bullSignal = string.Format("{0} Bullish = {1}{2}", newSymbol, bullishSignal, lineSeperator);
@@ -213,6 +215,7 @@ namespace PoloniexAutoTrader.Strategies
                     return true;
                 }                              
             }
+
             return false;
         }
 
@@ -233,43 +236,34 @@ namespace PoloniexAutoTrader.Strategies
                 if (SMA < previousSMA)
                 {
                     return true;
-                }               
+                }
             }
 
             return false;
-
-            // Output to debug to check values are correct
-            //Debug.WriteLine("{4} Is Falling = {0} | SMA {1} | Previous SMA {2} | {3} Bars ago", smaIsFalling, SMA.ToStringNormalized(), previousSMA.ToStringNormalized(), lookBack, newSymbol);
         }
 
         // Check if Fast SMA has crossed above slow SMA
         static bool BullishCrossver(double SMA, double SMA2, double previousSMA, double previousSMA2)
         {
             // CROSS OVER
-            if (previousSMA < previousSMA2 && SMA >= SMA2)
+            if ((previousSMA < previousSMA2) && SMA >= SMA2)
             {
                 return true;
             }
 
             return false;
-
-            // Output to debug to check values are correct
-            //Debug.WriteLine("{1} BullishCross = {0}", bullishCross, newSymbol);
         }
 
         // Check if Fast SMA has cross below slow SMA
         static bool Bearishrossver(double SMA, double SMA2, double previousSMA, double previousSMA2)
         {
             // CROSS OVER
-            if (previousSMA > previousSMA2 && SMA <= SMA2)
+            if ((previousSMA > previousSMA2) && SMA <= SMA2)
             {
                 return true;
             }
 
             return false;
-
-            // Output to debug to check values are correct
-            // Debug.WriteLine("{1} BearishCross = {0}", bearishCross, newSymbol);
         }
 
 
